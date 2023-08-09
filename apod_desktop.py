@@ -140,7 +140,7 @@ def add_apod_to_cache(apod_date):
    # four lines of code expected here
 
     # Check whether the APOD already exists in the image cache
-    apod_sha256 = hashlib.sha256(apod_image_data).hexdigest()
+    apod_sha256 = hashlib.sha256().hexdigest()
     print("APOD SHA-256:", apod_sha256)
     apod_id = get_apod_id_from_db(apod_sha256)
     if apod_id != 0: return apod_id
@@ -249,7 +249,7 @@ def determine_apod_file_path(image_title, image_url):
     file_name = file_name.replace(' ', '_')
     
     # Remove any non-word characters
-    file_name = file_name.remove(' '," ")
+    file_name = re.remove(r'w+\,',file_name)
     
     # Append the extension to the file name
     file_name = '.'.join((file_name, file_ext))
@@ -271,17 +271,17 @@ def get_apod_info(image_id):
         (Dictionary keys: 'title', 'explanation', 'file_path')
     """
     # Query DB for image info
-    #Add line one here
-    # Add line two here
-    image_path_query = 
+    db_cursor= sqlite3.connect
+    db_cxn = con.cursor()
+    image_path_query = "" 
     db_cursor.execute(image_path_query)
     query_result = db_cursor.fetchone()
-    db_cxn.close()
+    db_cxn.close(query_result)
 
     # Put information into a dictionary
     #Fill this out
 
-    return apod_info
+    return get_apod_info
 
 def get_all_apod_titles():
     """Gets a list of the titles of all APODs in the image cache
@@ -292,7 +292,7 @@ def get_all_apod_titles():
     db_cxn = sqlite3.connect
     
     db_cursor = db_cxn.cursor()
-    image_titles_query = # Complete this
+    image_titles_query = " "
     db_cursor.execute(image_titles_query)
     image_titles = db_cursor.fetchall()
     db_cxn.close()

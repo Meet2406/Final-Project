@@ -54,7 +54,7 @@ frm_explanation.rowconfigure(height=0,weight=1)
 frm_explanation.grid(row=1, columnspan=2, padx=10, sticky=NSEW)
 
 # Create the frame to hold the image select widgets
-lblfrm_select = ttk.Entry(frame_input)
+lblfrm_select = (ttk.LabelFrame(root, text="SELECT IMAGE APOD date"))
 lblfrm_select.grid(row=2, column=0, padx=(10,5), pady=10, sticky=NSEW)
 
 # Create the frame to hold the image download widgets

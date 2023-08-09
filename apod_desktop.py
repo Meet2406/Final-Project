@@ -20,7 +20,7 @@ import image_lib
 import apod_api
 import sys
 
-# Full paths of the image cache folder and database
+# Full paths of the image cache folder and database.
 # - The image cache directory is a subdirectory of the specified parent directory.
 # - The image cache database is a sqlite database located in the image cache directory.
 script_dir ='C:\Users\ASUS\Desktop\LAB 03\Final-Project'
@@ -64,7 +64,7 @@ def get_apod_date():
             sys.exit('Script execution aborted')
 
         # Validate that the date is within range
-        MIN_APOD_DATE = "2021-12-25"
+        MIN_APOD_DATE = "2023-12-25"
         if apod_date < MIN_APOD_DATE:
             print(f'Error: Date too far in past; First APOD was on {MIN_APOD_DATE.isoformat()}')
             sys.exit('Script execution aborted')
@@ -92,16 +92,20 @@ def init_apod_cache(dir_cache):
         {
             print("Create New '{dir_cache}'")
         }
-    con = sqlite3.connect(dir_cache)
+    con = sqlite3.connect(dir_cache.db)
     cur = con.cursor
     create_db = """
-   { id        INTEGER PRIMARY KEY,
-    TITLE     TEXT NOT FULL,
-    explanation Text Not Full,
-    path      Text Not Full,
-    sha_256   Text Not Full
-    };
-"""
+    CREATE TABLE IF NOT EXISTS relationships
+    (
+    id INTEGER PRIMARY KEY,
+    person1_id INTEGER NOT NULL,
+    person2_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    start_date DATE NOT NULL,
+    FOREIGN KEY (person1_id) REFERENCES people (id),
+    FOREIGN KEY (person2_id) REFERENCES people (id)
+    );
+    """
     cur.execute(create_db)
     con.commit()
     con.close()
@@ -133,9 +137,9 @@ def add_apod_to_cache(apod_date):
     print("APOD title:", apod_title)
 
     # Download the APOD image
-    image_download = image_lib.image_download(apod_info)
+    apod_url= image_lib.image_download(apod_info)
     apod_title = apod_info['title']
-    save_image= image_lib.save_image(apod_info)
+    apod_image_data= image_lib.save_image(apod_info)
     apod_explanation = apod_info['explanation']
    # four lines of code expected here
 
@@ -169,8 +173,8 @@ def add_apod_to_db(title, explanation, file_path, sha256):
     """
     print("Adding APOD to image cache DB...", end='')
     try:
-        con = sqlite3.connect(image_cache_dir)
-        cur = con.cursor
+        db_cxn = sqlite3.connect(image_cache_db)
+        db_cursor = db_cxn.cursor
         insert_image_query = """
             INSERT INTO image_data 
             (title, explanation, file_path, sha256)
@@ -272,7 +276,7 @@ def get_apod_info(image_id):
     """
     # Query DB for image info
     db_cursor= sqlite3.connect
-    db_cxn = con.cursor()
+    db_cxn = db_cxn.cursor()
     image_path_query = "" 
     db_cursor.execute(image_path_query)
     query_result = db_cursor.fetchone()
